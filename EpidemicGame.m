@@ -74,15 +74,26 @@ STAT_in_hospital_cnt    = zeros(1, liczbaCykli);
 STAT_recovered_cnt      = zeros(1, liczbaCykli);
 STAT_dead_cnt           = zeros(1, liczbaCykli);
 
+% definicje stanów
+HEALTHY = 0;
+IN_QUARANTINE = 1;
+INFECTED = 2;
+SICK = 3;
+INFECTED_SICK = 4;
+IN_HOSPITAL = 5;
+RECOVERED = 6;
+DEAD = 7;
+
+
 % x_start = randi(rozmiar);
 % y_start = randi(rozmiar);
 % 
-% zycie(y_start, x_start) = StateQ1.INFECTED;
+% zycie(y_start, x_start) = INFECTED;
 
 for n=1:infectedNum
     x_start = randi(rozmiar);
     y_start = randi(rozmiar);
-    zycie(y_start, x_start) = StateQ1.INFECTED; 
+    zycie(y_start, x_start) = INFECTED; 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% MAIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,41 +104,41 @@ for n=1:liczbaCykli
     
     zycie_image = uint8(zeros(rozmiar, rozmiar, 3));
     
-    STAT_healthy_cnt(n)         = sum(zycie(:)==StateQ1.HEALTHY);
-    STAT_quarantine_cnt(n)      = sum(zycie(:)==StateQ1.IN_QUARANTINE);
-    STAT_infected_cnt(n)        = sum(zycie(:)==StateQ1.INFECTED);
-    STAT_sick_cnt(n)            = sum(zycie(:)==StateQ1.SICK);
-    STAT_infected_sick_cnt(n)   = sum(zycie(:)==StateQ1.INFECTED_SICK);
-    STAT_in_hospital_cnt(n)     = sum(zycie(:)==StateQ1.IN_HOSPITAL);
-    STAT_recovered_cnt(n)       = sum(zycie(:)==StateQ1.RECOVERED);
-    STAT_dead_cnt(n)            = sum(zycie(:)==StateQ1.DEAD);
+    STAT_healthy_cnt(n)         = sum(zycie(:)==HEALTHY);
+    STAT_quarantine_cnt(n)      = sum(zycie(:)==IN_QUARANTINE);
+    STAT_infected_cnt(n)        = sum(zycie(:)==INFECTED);
+    STAT_sick_cnt(n)            = sum(zycie(:)==SICK);
+    STAT_infected_sick_cnt(n)   = sum(zycie(:)==INFECTED_SICK);
+    STAT_in_hospital_cnt(n)     = sum(zycie(:)==IN_HOSPITAL);
+    STAT_recovered_cnt(n)       = sum(zycie(:)==RECOVERED);
+    STAT_dead_cnt(n)            = sum(zycie(:)==DEAD);
     
-    zycie_image(:,:,1) = (zycie==StateQ1.HEALTHY)*255 + ...
-                         (zycie==StateQ1.IN_QUARANTINE)*152 + ...
-                         (zycie==StateQ1.INFECTED)*255 + ...
-                         (zycie==StateQ1.SICK)*255 + ...
-                         (zycie==StateQ1.INFECTED_SICK)*255 + ...
-                         (zycie==StateQ1.IN_HOSPITAL)*0 + ...
-                         (zycie==StateQ1.RECOVERED)*153 + ...
-                         (zycie==StateQ1.DEAD)*0;
+    zycie_image(:,:,1) = (zycie==HEALTHY)*255 + ...
+                         (zycie==IN_QUARANTINE)*152 + ...
+                         (zycie==INFECTED)*255 + ...
+                         (zycie==SICK)*255 + ...
+                         (zycie==INFECTED_SICK)*255 + ...
+                         (zycie==IN_HOSPITAL)*0 + ...
+                         (zycie==RECOVERED)*153 + ...
+                         (zycie==DEAD)*0;
     
-    zycie_image(:,:,2) = (zycie==StateQ1.HEALTHY)*255 + ...
-                         (zycie==StateQ1.IN_QUARANTINE)*51 + ...
-                         (zycie==StateQ1.INFECTED)*128 + ...
-                         (zycie==StateQ1.SICK)*255 + ...
-                         (zycie==StateQ1.INFECTED_SICK)*0 + ...
-                         (zycie==StateQ1.IN_HOSPITAL)*0 + ...
-                         (zycie==StateQ1.RECOVERED)*255 +...
-                         (zycie==StateQ1.DEAD)*0;
+    zycie_image(:,:,2) = (zycie==HEALTHY)*255 + ...
+                         (zycie==IN_QUARANTINE)*51 + ...
+                         (zycie==INFECTED)*128 + ...
+                         (zycie==SICK)*255 + ...
+                         (zycie==INFECTED_SICK)*0 + ...
+                         (zycie==IN_HOSPITAL)*0 + ...
+                         (zycie==RECOVERED)*255 +...
+                         (zycie==DEAD)*0;
                      
-    zycie_image(:,:,3) = (zycie==StateQ1.HEALTHY)*255 + ...
-                         (zycie==StateQ1.IN_QUARANTINE)*255 + ...
-                         (zycie==StateQ1.INFECTED)*0 + ...
-                         (zycie==StateQ1.SICK)*0 + ...
-                         (zycie==StateQ1.INFECTED_SICK)*0 + ...
-                         (zycie==StateQ1.IN_HOSPITAL)*255 + ...
-                         (zycie==StateQ1.RECOVERED)*255 +...
-                         (zycie==StateQ1.DEAD)*0;
+    zycie_image(:,:,3) = (zycie==HEALTHY)*255 + ...
+                         (zycie==IN_QUARANTINE)*255 + ...
+                         (zycie==INFECTED)*0 + ...
+                         (zycie==SICK)*0 + ...
+                         (zycie==INFECTED_SICK)*0 + ...
+                         (zycie==IN_HOSPITAL)*255 + ...
+                         (zycie==RECOVERED)*255 +...
+                         (zycie==DEAD)*0;
     
     figure(1)
     imshow(zycie_image, 'InitialMagnification', 400), drawnow;
@@ -157,82 +168,82 @@ for n=1:liczbaCykli
     for w=1:rozmiar
         for k=1:rozmiar
             switch(zycie(w,k))
-                case StateQ1.RECOVERED
-                    zyciePom(w,k) = StateQ1.RECOVERED;
+                case RECOVERED
+                    zyciePom(w,k) = RECOVERED;
                     
-                case StateQ1.DEAD
-                    zyciePom(w,k) = StateQ1.DEAD;
+                case DEAD
+                    zyciePom(w,k) = DEAD;
                     
-                case StateQ1.HEALTHY
+                case HEALTHY
                 % Dla kazdej komorki HEALTHY obliczam liczbe sasiadow
                 % zarazonych i chorych, a od wyniku uzalezniam
                 % prawdopodobienstwo zarazenia sie
                     if (prob_m(w,k) == 70) % szum 1% - mala szansa na bycie chorym na cos innego
-                        zyciePom(w,k) = StateQ1.SICK;
+                        zyciePom(w,k) = SICK;
                     end
-                    if (fCheckNeighbors(zycie, StateQ1.INFECTED_SICK, w, k) > 0)
+                    if (fCheckNeighbors(zycie, INFECTED_SICK, w, k) > 0)
                         if (prob_m(w,k) < prob_healthy_infected_byInfectedSick) 
-                            zyciePom(w,k) = StateQ1.INFECTED;
+                            zyciePom(w,k) = INFECTED;
                         elseif (prob_m(w,k) < prob_healthy_infected_byInfectedSick+prob_healthy_quarantine_byInfectedSick)
-                            zyciePom(w,k) = StateQ1.IN_QUARANTINE;
+                            zyciePom(w,k) = IN_QUARANTINE;
                         end
                     else
-                        if ((fCheckNeighbors(zycie, StateQ1.INFECTED, w, k) > 8) && (prob_m(w,k) < 2*prob_healthy_infected_byInfected))
-                            zyciePom(w,k) = StateQ1.INFECTED;
-                        elseif ((fCheckNeighbors(zycie, StateQ1.INFECTED, w, k) > 0) && (prob_m(w,k) < prob_healthy_infected_byInfected))
-                            zyciePom(w,k) = StateQ1.INFECTED;
+                        if ((fCheckNeighbors(zycie, INFECTED, w, k) > 8) && (prob_m(w,k) < 2*prob_healthy_infected_byInfected))
+                            zyciePom(w,k) = INFECTED;
+                        elseif ((fCheckNeighbors(zycie, INFECTED, w, k) > 0) && (prob_m(w,k) < prob_healthy_infected_byInfected))
+                            zyciePom(w,k) = INFECTED;
                         end
                     end
                         
-                case StateQ1.IN_QUARANTINE
+                case IN_QUARANTINE
                     if (prob_m(w,k) < prob_quarantine_healthy)
-                        zyciePom(w,k) = StateQ1.HEALTHY;
+                        zyciePom(w,k) = HEALTHY;
                     elseif (prob_m(w,k) < prob_quarantine_healthy+prob_quarantine_recovered)
-                        zyciePom(w,k) = StateQ1.RECOVERED;
+                        zyciePom(w,k) = RECOVERED;
                     elseif (prob_m(w,k) < prob_quarantine_healthy+prob_quarantine_recovered+prob_quarantine_hospital)
-                        zyciePom(w,k) = StateQ1.IN_HOSPITAL;
+                        zyciePom(w,k) = IN_HOSPITAL;
                     end
                     
-                case StateQ1.INFECTED
+                case INFECTED
                     if (prob_m(w,k) < prob_infected_infectedSick)
-                        zyciePom(w,k) = StateQ1.INFECTED_SICK;
+                        zyciePom(w,k) = INFECTED_SICK;
                     elseif (prob_m(w,k) < prob_infected_infectedSick+prob_infected_recovered)
-                        zyciePom(w,k) = StateQ1.RECOVERED;
+                        zyciePom(w,k) = RECOVERED;
                     else
-                        zyciePom(w,k) = StateQ1.INFECTED;
+                        zyciePom(w,k) = INFECTED;
                     end
                     
-                case StateQ1.SICK
+                case SICK
                     if (prob_m(w,k) < prob_sick_quarantine)
-                        zyciePom(w,k) = StateQ1.IN_QUARANTINE;
+                        zyciePom(w,k) = IN_QUARANTINE;
                     elseif (prob_m(w,k) < prob_sick_quarantine+prob_sick_healthy)
-                        zyciePom(w,k) = StateQ1.HEALTHY;
+                        zyciePom(w,k) = HEALTHY;
                     else
-                        zyciePom(w,k) = StateQ1.SICK;
+                        zyciePom(w,k) = SICK;
                     end
                     
-                case StateQ1.INFECTED_SICK
+                case INFECTED_SICK
                     if (prob_m(w,k) < prob_infectedSick_quarantine)
-                        zyciePom(w,k) = StateQ1.IN_QUARANTINE;
+                        zyciePom(w,k) = IN_QUARANTINE;
                     elseif (prob_m(w,k) < prob_infectedSick_quarantine+prob_infectedSick_hospital)
-                        zyciePom(w,k) = StateQ1.IN_HOSPITAL;
+                        zyciePom(w,k) = IN_HOSPITAL;
                     elseif (prob_m(w,k) < prob_infectedSick_quarantine+prob_infectedSick_hospital+prob_infectedSick_recovered)
-                        zyciePom(w,k) = StateQ1.RECOVERED;
+                        zyciePom(w,k) = RECOVERED;
                     elseif (prob_m(w,k) < prob_infectedSick_quarantine+prob_infectedSick_hospital+prob_infectedSick_recovered+prob_infectedSick_dead)
-                        zyciePom(w,k) = StateQ1.DEAD;
+                        zyciePom(w,k) = DEAD;
                     else
-                        zyciePom(w,k) = StateQ1.INFECTED_SICK;
+                        zyciePom(w,k) = INFECTED_SICK;
                     end
                     
-                case StateQ1.IN_HOSPITAL
+                case IN_HOSPITAL
                     if (prob_m(w,k) < prob_hospital_dead)
-                        zyciePom(w,k) = StateQ1.DEAD;
+                        zyciePom(w,k) = DEAD;
                     elseif (prob_m(w,k) < prob_hospital_dead+prob_hospital_recovered)
-                        zyciePom(w,k) = StateQ1.RECOVERED;
+                        zyciePom(w,k) = RECOVERED;
                     elseif (prob_m(w,k) < prob_hospital_dead+prob_hospital_recovered+prob_hospital_healthy)
-                        zyciePom(w,k) = StateQ1.HEALTHY;
+                        zyciePom(w,k) = HEALTHY;
                     else
-                        zyciePom(w,k) = StateQ1.IN_HOSPITAL;
+                        zyciePom(w,k) = IN_HOSPITAL;
                     end
             end     
         end
